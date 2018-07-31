@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/messagedetails.css" />
+    <title>系统消息详情</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+    <div class="heads">
+        <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+        </div>
+        <div class="nav_center">
+            <a href="../../index.html">
+                <span class="check">现场直播</span>
+            </a>
+            <a href="../video/video.html">
+                <span class="">视频</span>
+            </a>
+        </div>
+        <div class="navs">
+            <ul>
+                <!-- 判断点击开播跳转页面 -->
+                <li v-if="reddot.liveCount==0">
+                    <a href="../nba/applylive.html">
+                        <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                    </a>
+                </li>
+                <li v-else>
+                    <a href="../nba/livelist.html">
+                        <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                    </a>
+                </li>
+                <li>
+                    <a href="../video/upload.html">
+                        <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                </li>
+                <li>
+                    <a href="../personal/message.html">
+                        <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                        <img src="../../images/nav/information.png" alt=""> 信息
+                    </a>
+                </li>
+            </ul>
+            <img src="../../images/head.png" alt="" class="personal">
+        </div>
+    </div>
+    <div class="wrap">
+        <div class="content">
+            <div class="left">
+                <div class="top">
+                    <img src="../../images/hai.png" alt="" srcset="">
+                    <span>张三</span>
+                    <span>市场部</span>
+                </div>
+                <div class="sidebar">
+                    <ul class="aside">
+                        <a href="../personal/personal.html" class="navs">
+                            <li>我的项目</li>
+                        </a>
+
+                        <a href="../personal/mylive.html">
+                            <li>我的直播</li>
+                        </a>
+
+                        <a href="../personal/myvideo.html" class="navs">
+                            <li>我的视频</li>
+                        </a>
+
+                        <a href="../personal/message.html">
+                            <li class="active">系统消息</li>
+                        </a>
+
+                        <a href="../personal/feedback.html">
+                            <li>意见反馈</li>
+                        </a>
+
+                        <a href="#" class="navs">
+                            <li>更多设置</li>
+                        </a>
+
+                        <a href="javascript:ssologout()">
+                            <li>退出登录</li>
+                        </a>
+
+                    </ul>
+                </div>
+            </div>
+            <div class="right">
+                <a href="../personal/message.html" class="back">
+
+                    <img src="../../images/zuo.png" alt="">
+                    <span>返回消息列表</span>
+                </a>
+                <div class="details_con">
+                    <span class="title">蔷薇国际盛世开盘</span>
+
+                    <p>选到心仪房源的客户们兴奋之情溢于言表，愉快地交流起对项目的看法： “高铁站的开通运行和遵义城市轨道即将开建，新蒲新区的发展前景不言而喻， 处于新蒲新区核心地段的实地蔷薇国际，未来发展更是不可限量。实地蔷薇国际每每开盘均被抢购一空，
+                        这次说什么也不能再错过了。”由于本次推售房源有限，有些客户没有满载而归，虽然遗憾， 但大家表示会继续关注下一期房源，买不到蔷薇国际誓不罢休。
+                    </p>
+                    <img src="../../images/hai.png" alt="">
+                    <p>选到心仪房源的客户们兴奋之情溢于言表，愉快地交流起对项目的看法： “高铁站的开通运行和遵义城市轨道即将开建，新蒲新区的发展前景不言而喻， 处于新蒲新区核心地段的实地蔷薇国际，未来发展更是不可限量。实地蔷薇国际每每开盘均被抢购一空，
+                        这次说什么也不能再错过了。”由于本次推售房源有限，有些客户没有满载而归，虽然遗憾， 但大家表示会继续关注下一期房源，买不到蔷薇国际誓不罢休。
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 分页 -->
+    <div class="paging">
+        <!-- <div>
+            <img src="../../images/zuo.png" alt="">
+        </div>
+        <div class="actives">1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>...</div>
+        <div>12</div>
+        <div>
+            <img src="../../images/you.png" alt="">
+        </div> -->
+    </div>
+    <!-- 底部 -->
+    <div class="foots">
+        <div>
+            <ul>
+                <li>
+                    <a href="#">法律声明</a>
+                </li>|
+                <li>
+                    <a href="#">在线留言</a>
+                </li>|
+                <li>
+                    <a href="#">网址地图</a>
+                </li>|
+                <li>
+                    <a href="#">联系我们</a>
+                </li>
+            </ul>
+            <div class="copy">
+                粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                <img src="../../images/cnzz.png" alt="" class="cnzz">
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/swiper.min.js"></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+<script>
+    $(function () {
+        $('.aside a li').on('click', function () {
+            $('.aside a li').removeClass('active')
+            $(this).addClass('active')
+        })
+
+
+
+
+    })
+</script>
+
+</html>

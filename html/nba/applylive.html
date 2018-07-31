@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/applylive.css" />
+    <link href="../../css/iconfont.css" rel="stylesheet" type="text/css" />
+    <link href="../../css/fileUpload.css" rel="stylesheet" type="text/css">
+    <!-- <link rel="stylesheet" href="../../js/skin/layui.css"> -->
+    <link rel="stylesheet" href="../../js/skin/laydate.css">
+    <link rel="stylesheet" href="../../js/skin/layer.css" media="all">
+    <link rel="stylesheet" href="../../css/ui.css">
+    <link rel="stylesheet" href="../../css/ui.progress-bar.css">
+    <title>直播申请</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png"
+        type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断开播打开的页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+                    <img :src="applylive.logoPath ?applylive.logoPath :' ../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="wrap">
+            <div class="content">
+                <div class="apply">申请直播:</div>
+                <div class="apply_content">
+                    <span>直播标题:</span>
+                    <input type="text" name="" v-model="broadcast.title" id="titles" placeholder="请输入直播标题" class="headline" maxlength="20">
+
+                    <span>项目名称:</span>
+                    <select class="drop-down project" @change='getproject' ref="project" v-model="broadcast.projectId">
+                        <option value="0" disabled>请选择项目名称</option>
+                        <option v-for="items in project" :value="items.id">{{items.name}}</option>
+
+                    </select>
+
+                    <span>业务类型:</span>
+
+                    <select class="drop-down busines" @change='getValue' ref="busines" v-model="broadcast.serviceId">
+                        <option value="0" disabled>请选择业务类型</option>
+                        <option v-for="items in business" :value="items.id">{{items.name}}</option>
+
+                    </select>
+                    <span>分区名称:</span>
+                    <select class="drop-down tionlist" @change='getlist' ref="tionlist" v-model="broadcast.areaId">
+                        <option value="0" disabled>请选择分区名称</option>
+                        <option v-for="item in partitionlist" :value="item.id">{{item.name}}</option>
+
+                    </select>
+                    <span>直播日期:</span>
+                    <input type="text" class="layui-input live_date" id="test13" placeholder="请选择直播日期" v-model="broadcast.liveDate">
+                    <!-- <input type="date" name="" id="" placeholder="请选择直播日期" class="live_date" v-model="broadcast.liveDate"> -->
+                    <span>直播时间</span>
+
+                    <input type="text" class="layui-input live_time" id="test14" placeholder="请输入直播时间" v-model="broadcast.liveTime">
+                    <!-- <input type="time" name="" id="" placeholder="请输入直播时间" class="live_time" v-model="broadcast.liveTime" /> -->
+
+                    <span>是否对游客开放:</span>
+                    <select class="drop-down ethers" @change='whether' ref="ether">
+
+                        <option :value=0>是</option>
+                        <option :value=1>否</option>
+                    </select>
+
+                    <span>直播类型:</span>
+                    <select class="drop-down seeding" @change='seeding' ref="seed">
+                        <option :value=1>PC直播</option>
+                        <option :value=0>手机直播</option>
+                    </select>
+
+                    <span>直播封面图:</span>
+                    <div class="uploadpic">
+                        上传图片
+
+                        <img :src="broadcast.photoUrl ?broadcast.photoUrl :''" alt="" class='addto_img pic'>
+                        <img src="../../images/modify.png" alt="" class="modify" @click='modify'>
+                        <form id="form" method="post" enctype="multipart/form-data">
+                            <input type="file" id="fileId" name="image" onchange="changeHeadLogo(this,type)" class="head-logo-input upload" id="name"
+                                accept="image/*" />
+                        </form>
+                    </div>
+
+                    <span>直播预告片:</span>
+
+                    <div class="uploadpic videodetail">
+                        上传视频
+                        <video src="" class="uploadvideo"></video>
+                        <img src="../../images/modify.png" alt="" class="headvideo" @click='headvideo'>
+                        <form id="form" method="post" enctype="multipart/form-data">
+                            <input type="file" id="fileId" accept="video/*" name="video" onchange="changeHeadVideo(this,type)" class="head-logo-input upload"
+                                id="name" />
+                        </form>
+
+                    </div>
+
+                    <div class="indeed" @click="apply">确认</div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                    
+                </div>
+            </div>
+        </div>
+        <!-- 上传中弹框-->
+        <div class="uploading">
+            <div class="frames">
+                <div id="container">
+
+                    <!-- Progress bar -->
+                    <div id="progress_bar" class="ui-progress-bar ui-container">
+                        <div class="ui-progress" style="width: 0%;">
+                            <span class="ui-label" style="display:none;">正在加载...
+                                <b class="value">0%</b>
+                            </span>
+                        </div>
+                        <span class="cancel" @click="cancel">取消</span>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="./../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/layui.all.js"></script>
+<!-- <script src="../../js/laydate.js"></script> -->
+<script src="../../js/layer.min.js"></script>
+<!-- <script src="../../js/progress.js"></script> -->
+<script type="text/javascript">
+</script>
+<script>
+    $(function () {
+        $("#titles").bind('input porpertychange', function () {
+            if ($("#titles").val().length > 20) {
+                layer.msg('直播标题字数不能超20')
+            }
+        });
+
+        layui.use('laydate', function () {
+            var laydate = layui.laydate;
+
+            laydate.render({
+                elem: '#test13'
+            });
+            laydate.render({
+                elem: '#test14',
+                type: 'time',
+                format: 'HH:mm'
+            });
+        })
+
+        //项目名称
+        window.onload = $.ajax({
+            url: common.urls + '/project/classifyList.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                userId: common.data.info.id,
+                projectId: tipiv.broadcast.projectId,
+                type: 1,
+                state: 2
+
+            },
+            success: function (data) {
+                if (data.status == 10001) {
+                    tipiv.project = data.dataInfo.info
+                }
+            },
+            error: function (data) {
+
+            }
+        })
+
+    });
+
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+
+
+    var tipiv = new Vue({
+        el: "#app",
+        data: {
+            reddot: common.show, //消息红点状态
+            applylive: common.data.info,
+            //项目列表
+            project: '',
+            //分区列表
+            partitionlist: '',
+            // 业务
+            business: "",
+            selected: false,
+            //业务id
+            serviceId: '',
+            //项目id
+            //直播详情
+            broadcast: {
+                projectId: 0,
+                serviceId: 0,
+                areaId: 0
+            },
+            openState: 0,
+            isPc: 1
+
+
+        },
+        methods: {
+            //
+            modify: function () {
+                $(".addto_img.pic")[0].src = ''
+                $('.modify').hide()
+            },
+            headvideo: function () {
+
+                $(".uploadvideo")[0].src = ''
+                $('.headvideo').hide()
+            },
+            cancel: function () {
+                $(".uploadvideo")[0].src = ''
+                $('.headvideo').hide()
+                $('.uploading').hide()
+                //中断上传视频
+                /*   if (currentAjax) {
+                      currentAjax.abort();
+                  } */
+            },
+
+            //点击确认
+            apply: function () {
+                //现日期
+                var date = (new Date()).toISOString().slice(0, 10)
+                //现在时间 
+                var time = ''
+                if (new Date().getHours() < 10 && new Date().getMinutes() < 10) {
+                    var hours = '0' + new Date().getHours()
+                    var minutes = '0' + new Date().getMinutes()
+                    time = hours + ':' + minutes
+                } else {
+                    time = new Date().getHours() + ':' + new Date().getMinutes()
+                }
+                // 选中时间的时间戳
+
+                var liveDate = $('.live_date').val() + ' ' + $('.live_time').val()
+                var checkDeta = new Date(liveDate).getTime();
+                // 当前时间时间戳
+                var timestamp = Date.parse(new Date());
+
+                var len = /^([01]\d|2[01234]):([0-5]\d|60)$/
+                if (common.replace($(".headline").val()) == '') {
+                    layer.msg('请输入直播标题')
+                    return
+                } else if ($('.project').val() == '0') {
+                    layer.msg('请选择项目名称')
+                } else if ($('.busines').val() == '0') {
+                    layer.msg('请选择业务类型')
+                } else if ($('.tionlist').val() == '0') {
+                    layer.msg('请选择分区名称')
+                } else if ($('.live_date').val() == '') {
+                    layer.msg('请选择直播日期')
+                    // } else if (!len.test($('.live_time').val()) || $('.live_time').val() == '') {
+                } else if ($('.live_time').val() == '') {
+                    layer.msg('请输入直播时间')
+                } else if (checkDeta < timestamp) {
+                    layer.msg('请输入正确的直播时间')
+                } else if ($('.addto_img').attr('src') == '') {
+                    layer.msg('请上传直播封面')
+                } else if ($('.uploadvideo').attr('src') == '') {
+                    layer.msg('请上传预告视频')
+                } else {
+                    //申请直播
+                    $.ajax({
+                        url: common.urls + '/live/save.do',
+                        dataType: 'json',
+                        type: 'post',
+                        data: {
+                            title: $(".headline").val(),
+                            userId: common.data.info.id,
+                            photoUrl: $('.addto_img').attr('src'),
+                            videoUrl: $('.uploadvideo').attr('src'),
+                            liveTime: $('.live_time').val(),
+                            projectId: tipiv.broadcast.projectId,
+                            serviceId: tipiv.broadcast.serviceId,
+                            areaId: tipiv.broadcast.areaId,
+                            liveDate: $('.live_date').val(),
+                            openState: tipiv.openState,
+                            isPc: tipiv.isPc,
+
+
+                        },
+                        success: function (data) {
+                            if (data.status == 10001) {
+                                layer.msg(data.msg)
+                                setTimeout(function () {
+                                    location.href = '../../index.html'
+                                }, 2000)
+                            } else {
+                                layer.msg(data.msg)
+                            }
+
+                        },
+                        error: function (data) {
+
+                        }
+                    })
+                }
+            },
+            // 监听项目选项 获取id
+            getproject: function () {
+                tipiv.projectId = this.$refs.project.value
+
+
+                //业务列表
+                $.ajax({
+                    url: common.urls + '/project/classifyList.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        projectId: tipiv.broadcast.projectId,
+                        type: 2
+
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+                            tipiv.business = data.dataInfo.info
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                })
+
+            },
+            //直播类型
+            seeding: function () {
+                tipiv.isPc = this.$refs.seed.value
+
+            },
+            //是否
+            whether: function () {
+                tipiv.openState = this.$refs.ether.value
+
+            },
+            //获取分区id
+            getlist: function () {
+                tipiv.areaId = this.$refs.tionlist.value
+            },
+            getValue: function () {
+                // 监听选中获取业务id
+
+                tipiv.serviceId = this.$refs.busines.value
+
+                //分区列表
+                $.ajax({
+                    url: common.urls + '/project/classifyList.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        serviceId: tipiv.serviceId,
+                        type: 3
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+                            tipiv.partitionlist = data.dataInfo.info
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                })
+            }
+        },
+        mounted: function () {
+
+            //项目名称
+            /* $.ajax({
+                    url: common.urls + '/project/classifyList.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        type: '1',
+                        state: '1'
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+                            tipiv.project = data.dataInfo.info
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                }), */
+            //申请直播详情
+            $.ajax({
+                url: common.urls + '',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    id: getQueryString('id')
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        tipiv.broadcast = data.dataInfo.info
+                        $.ajax({
+                            url: common.urls + '/project/classifyList.do',
+                            dataType: 'json',
+                            type: 'get',
+                            data: {
+                                userId: common.data.info.id,
+                                serviceId: tipiv.broadcast.serviceId,
+                                type: 3
+                            },
+                            success: function (data) {
+                                if (data.status == 10001) {
+                                    tipiv.partitionlist = data.dataInfo.info
+                                }
+                            },
+                            error: function (data) {
+
+                            }
+                        })
+
+
+                        if (!tipiv.broadcast.projectId) {
+                            tipiv.broadcast.projectId = 0
+                        }
+
+                        tipiv.$nextTick(function () {
+                            if ($(".addto_img.pic")[0].src = tipiv.broadcast.photoUrl) {
+                                $('.modify').show()
+                            }
+                            if ($(".uploadvideo")[0].src = tipiv.broadcast.videoUrl) {
+                                $('.headvideo').show()
+                            }
+                        })
+                        tipiv.getproject()
+                    }
+                },
+                error: function (data) {
+
+                }
+            })
+
+
+        }
+    })
+
+    //上传图片
+    function changeHeadLogo(_this, type) {
+        var form = new FormData($(_this).closest("form")[0]);
+        /*         $('.uploading').show() */
+        $.ajax({
+                url: common.urls + '/upload/fileUploadByByte.do?type=2',
+                type: 'post',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                data: form
+            })
+            .done(function (data) {
+                if (data.status === 10001) {
+                    /*    $('.uploading').hide() */
+                    $(".addto_img.pic")[0].src = data.dataInfo.path;
+                    //初始化
+                    tipiv.$nextTick(function () {
+                        $('.modify').show()
+                    })
+
+                } else {
+                    layer.msg('上传失败')
+                }
+            })
+    }
+    //上传视频
+    var currentAjax = null;
+
+    function changeHeadVideo(_this, type) {
+        var form = new FormData($(_this).closest("form")[0]);
+        $('.uploading').show()
+
+        currentAjax = $.ajax({
+                url: common.urls + '/upload/fileUploadByByte.do?type=1',
+                type: 'post',
+                dataType: 'json',
+                contentType: false,
+                processData: false,
+                data: form,
+                xhr: function () {
+                    var xhr = $.ajaxSettings.xhr();
+                    if (xhr.upload) {
+                        xhr.upload.addEventListener('progress', function (event) {
+                            var percent = Math.floor(event.loaded / event.total * 100);
+                            $(".ui-label").show()
+                            $(".ui-progress").animate({width:percent+"%"},percent);
+                            $(".value").html(percent+"%");
+                        }, false);
+                    }
+                    return xhr
+                }
+            })
+            .done(function (data) {
+                if (data.status === 10001) {
+                    $('.uploading').hide()
+                    $(".uploadvideo")[0].src = data.dataInfo.path;
+                    //初始化
+                    tipiv.$nextTick(function () {
+                        $('.headvideo').show()
+                    })
+                } else {
+                    layer.msg('上传失败')
+                }
+            })
+    }
+</script>
+
+</html>

@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/upload.css" />
+    <link rel="stylesheet" href="../../js/skin/layer.css" media="all">
+    <link rel="stylesheet" href="../../css/ui.css">
+    <link rel="stylesheet" href="../../css/ui.progress-bar.css">
+
+    <title>上传视频</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png"
+        type="image/x-icon" />
+
+</head>
+
+<body>
+    <!--     	<script src="../../js/googlegg.js"></script> -->
+    <div id="app" v-cloak>
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="check">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+                    <img :src="uploading.logoPath ?uploading.logoPath :' ../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="wrap">
+            <div class="content">
+                <div class="order">
+                    <span class="number active">1</span>
+                    <span class="actives">选择</span>
+                    <span class="line"></span>
+                    <span class="number">2</span>
+                    <span>上传</span>
+                    <span class="line"></span>
+                    <span class="number">3</span>
+                    <span>完成</span>
+
+                </div>
+                <div class="files">
+
+                    <img src="../../images/choice.png" alt="">
+                    <span>选择文件或直接拖动文件至此处</span>
+
+                    <form id="form" method="post" enctype="multipart/form-data">
+                        <input type="file" accept="video/*" id="fileId" name="video" onchange="changeHeadLogo(this,type)" class="head-logo-input upload"
+                            id="video" />
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+        <!-- 上传中弹框-->
+        <div class="uploading">
+            <div class="frames">
+
+                <div id="container">
+
+                    <!-- Progress bar -->
+                    <div id="progress_bar" class="ui-progress-bar ui-container">
+                        <div class="ui-progress" style="width: 0%;">
+                            <span class="ui-label" style="display:none;">正在加载...
+                                <b class="value">0%</b>
+                            </span>
+                        </div>
+                        <span class="cancel" @click="cancel">取消</span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+<script src='../../js/common.js'></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+<!-- <script src="../../js/progress.js"></script> -->
+<script src="../../js/vue.js"></script>
+<script src="../../js/layer.min.js"></script>
+
+
+<script>
+    var tipiv = new Vue({
+        el: "#app",
+        data: {
+            uploading: common.data.info,
+            reddot: common.show, //消息红点状态
+        },
+        methods: {
+            cancel: function () {
+                $('.uploading').hide()
+                location.reload();
+            }
+        }
+    })
+
+    function changeHeadLogo(_this, type) {
+        var form = new FormData($(_this).closest("form")[0]);
+        //文件大小
+        var size = $("#fileId")[0].files[0].size;
+        var filesize = 0;
+
+        $('.uploading').show()
+        var video = _this.files[0];
+        var url = URL.createObjectURL(video);
+        var video = document.createElement("video");
+        video.src = url;
+        video.oncanplaythrough = function () {
+            var hour = parseInt((this.duration) / 3600);
+            var minute = parseInt((this.duration % 3600) / 60);
+            var second = Math.ceil(this.duration % 60);
+            //获取视频的时长
+            console.log(buleng(hour) + ':' + buleng(minute) + ':' + buleng(second))
+            var videoTime = buleng(hour) + ':' + buleng(minute) + ':' + buleng(second)
+            $.ajax({
+                    url: common.urls + '/upload/fileUploadByByte.do?type=1',
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: false,
+                    processData: false,
+                    data: form,
+                    xhr: function () {
+                        var xhr = $.ajaxSettings.xhr();
+                        if (xhr.upload) {
+                            xhr.upload.addEventListener('progress', function (event) {
+                                var percent = Math.floor(event.loaded / event.total * 100);
+                                $(".ui-label").show()
+                                $(".ui-progress").animate({
+                                    width: percent + "%"
+                                }, percent);
+                                $(".value").html(percent + "%");
+                            }, false);
+                        }
+                        return xhr
+                    }
+                })
+                .done(function (data) {
+                    if (data.status === 10001) {
+                        var path = data.dataInfo.path
+                        $('.uploading').hide()
+                        layer.msg('上传' + data.msg)
+                        setTimeout(function () {
+                            location.href = '../video/uploading.html?path=' + path + '&videoTime=' +
+                                videoTime
+                        }, 2000)
+                    } else {
+                        layer.msg('上传失败')
+                    }
+                })
+
+        }
+
+
+    }
+
+    //加0
+    function buleng(num) {
+        if (num < 10) {
+            num = '0' + num
+        }
+        return num
+    }
+</script>
+
+</html>

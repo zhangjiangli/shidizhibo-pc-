@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/watch_video.css" />
+    <link rel="stylesheet" href="../../js/skin/layer.css"  media="all">
+    <title>视频详情</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+<div id="app" v-cloak>
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                    <a href="../../index.html">
+                        <img src="../../images/logo.png" alt="">
+                    </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="">现场直播</span>
+                </a>
+               
+                <a href="../video/video.html">
+                    <span class="check">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                     <!-- 判断点击开播跳转页面 -->
+                <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                            <a href="../personal/message.html">
+                                <img class="reddot" src="../../images/reddot.png" alt=""v-show='reddot.isReddot==1'>
+                                <img src="../../images/nav/information.png" alt="">
+                                 信息</a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+       
+                    <img :src="watchvideo.logoPath?watchvideo.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="wrap">
+            <div class="content">
+                <div class="left">
+                    <div class="title">
+                        <img :src="challenge.logoPath?challenge.logoPath :'../../images/logos.png'" alt="" srcset="" class="title-img">
+                        <div class="msee">
+                            <span>{{challenge.title}}</span>
+                            <span>{{challenge.nickName}}</span>
+                            <span>{{challenge.projectName}}/{{challenge.serviceName}}</span>
+                            <span>{{challenge.createTime}}</span>
+                            <img src="../../images/playback.png" alt="">
+                            <span>{{challenge.watchCount}}</span>
+                            
+                        </div>
+                    </div>
+                    <!-- 视频 -->
+                    <div class="videos">
+                        <video id="video" style="width:100%; height:600px;" controls autoplay="autoplay">
+                    </div>
+                </div>
+                <div class="right">
+                    <span class="more">更多项目视频</span>
+                    <div class="video-list" v-for="item in challenge.videoList" @click="tops(item)">
+                        <!-- 1 -->
+                        <div class="lists">
+                          <div>
+                            <img :src="item.photoUrl" alt="" class="imgs">
+                          </div>
+                            <div>
+                                    <span>{{item.title}}</span>
+                                    <span>{{item.serviceName}}</span>
+                                    <span>{{item.projectName}}</span>
+                                    <span>{{item.nickName}}  <img src="../../images/playback.png" alt=""> {{item.watchCount}}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+</div>
+</body>
+
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/h5connect.js"></script>
+<script src="../../js/layer.min.js"></script>
+ 
+<script>
+    $(function () {
+        $(".lists").mousemove(function () {
+            $(this).addClass('active')
+        });
+        $(".lists").mouseout(function () {
+            $(this).removeClass('active')
+        }); 
+    })
+
+      function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            challenge: '',
+            watchvideo:common.data.info,
+            reddot:common.show, //消息红点状态
+        },
+        methods: {
+           
+            tops: function (item) {
+                location.href = '../video/watch_video.html?id=' + item.id
+            },
+            moreplay: function () {
+                location.href = '../spotvideo/morevideo.html?id=' + tipiv.challenge.id + '&key=' + tipiv.challenge
+                    .projectName
+
+            }
+        },
+        mounted: function () {
+
+            $.ajax({
+                url: common.urls + '/video/detail.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    id: decodeURI(getQueryString("id")),
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        tipiv.challenge = data.dataInfo.info
+                       
+                        var videoUrl = data.dataInfo.info.videoUrl != null ? data.dataInfo.info.videoUrl : data.dataInfo.info.fileUrl;
+                       
+                        $("#video").html('<source src="' + videoUrl + '"  type="video/mp4">');
+  
+              
+                        var url = common.urls + '/video/saveWatch.do';
+                        $.post(url, {
+                            type: 2,
+                            userId: common.data.info.id,
+                            relId: tipiv.challenge.id
+                        }, function (ret) {
+
+                        });
+                    } else(
+                        layer.msg(data.msg)
+                    )
+                },
+                error: function (data) {
+
+                }
+            })
+        },
+
+    })
+</script>
+
+</html>

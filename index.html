@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="./css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="./css/common.css" />
+    <link rel="stylesheet" type="text/css" href="./css/index.css" />
+    <!-- <link rel="stylesheet" href="./js/skin/layer.css" media="all"> -->
+    <title>实地在线直播</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="heads">
+            <div class="logo">
+                <a href=" ./index.html">
+                    <img src="./images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href=" ./index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="./html/video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断 -->
+                    <li v-if='show.liveCount==0'>
+                        <a href="html/nba/applylive.html">
+                            <img src="./images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="html/nba/livelist.html">
+                            <img src="./images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="html/video/upload.html">
+                            <img src="./images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="html/personal/message.html">
+
+                            <img class="reddot" src="./images/reddot.png" alt="" v-show='show.isReddot==1'>
+                            <img src="./images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="html/personal/personal.html">
+                    <img :src="challenge.logoPath?challenge.logoPath:'./images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <div class="wrap">
+
+            <div>
+                <!--轮播图 -->
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for="item in choice" @click='pics(item)'>
+                            <img :src="item.photoUrl" />
+                        </div>
+                    </div>
+                    <!-- 如果需要分页器 -->
+                    <div class="swiper-pagination"></div>
+                    <!-- Add Arrows -->
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+                <div class="nav_head">
+                    <div class="reen">
+                        <span class="screens">业务类型</span>
+
+                        <img src="./images/sanjiao.png" alt="">
+
+                    </div>
+                    <!--筛选框 -->
+
+                    <div class="navMian">
+                        <div class="navMian-left" v-for='(items,index) in business' :class="{actives : index==indexbusiCheck}" @click='bus(index,items)'>{{items.name}}</div>
+                    </div>
+                    <!-- 导航 -->
+                    <div class="wrapper wrapper04" id="sass">
+                        <div class="scroller">
+                            <ul class="clearfix">
+                                <li :i="index" v-for='(item,index) in project' :class="{active : index==0}">
+                                    <a href="javascript:void(0)">{{item.name}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="videodetails">
+            <!-- 1 -->
+            <div class="videos" v-for='items in nbas' @click='loads(items)'>
+                <div>
+                    <div class="sequence">
+                        <img :src="items.photoUrl" alt="">
+                        <div class="scene">{{items.serviceName}}</div>
+                        <div class="watch" v-if="items.status ==0">
+                            {{ items.liveDate}}开播
+                        </div>
+                        <div class="watch" v-else-if="items.status ==1">
+                            {{ items.onlineCount}}在线观看
+                        </div>
+                    </div>
+
+                    <img src="./images/trailer.png" alt="" class="trailer" v-show="items.status ==0">
+
+                    <span class="opening">{{items.projectName}}/{{items.title}}</span>
+                    <span class="sign">{{items.serviceName}}/{{items.areaName}}</span>
+                </div>
+            </div>
+
+        </div>
+        <!-- 分页 -->
+        <div class="paging">
+            <div class="tcdPageCode"></div>
+            <div class="" v-show="nbas == ''">没有数据</div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="./images/cnzz.png" alt="" class="cnzz">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="./js/common.js"></script>
+<script src="./js/jquery-1.11.1.js"></script>
+<script src="./js/swiper.min.js"></script>
+<script src="./js/vue.js"></script>
+<script src="./js/jquery.page.js"></script>
+
+<script src="./js/iscroll.js"></script>
+<script src="./js/navbarscroll.js"></script>
+<script src="./js/layer.min.js"></script>
+<script>
+    $(function () {
+        $('.choose>li').on('click', function () {
+            $(this).addClass('active').siblings().removeClass('active')
+        })
+        var sieve = true;
+
+        //demo示例一到四 通过lass调取，一句可以搞定，用于页面中可能有多个导航的情况 
+
+
+    })
+</script>
+<script>
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            challenge: '',
+            choice: '', //轮播图
+            project: '', //项目列表
+            nbas: '', //在线直播
+            business: '', //业务列表
+            show: '', //消息显示红点
+            // 项目id
+            projectId: '',
+            //页数
+            pageNum: 1,
+            /*      indextitle: common.data.info, */
+            //当前选中那个
+            indexTapCheck: 0,
+
+            //业务列表当前选中
+            indexbusiCheck: -1,
+            // 项目id
+            projectId: '',
+            //页数
+            page: 1,
+            //总页数
+            pageCount: ''
+        },
+
+        methods: {
+            //点击轮播图跳转
+            pics: function (item) {
+                if (item.videoUrl != '' && item.videoUrl) {
+                    location.href = './html/video/sowing.html?videoUrl=' + item.videoUrl
+
+                } else {
+                    location.href = common.urls + item.content
+                }
+            },
+            //点击业务
+            bus: function (index, items) {
+                if (tipiv.indexbusiCheck == index) {
+                    tipiv.indexbusiCheck = -1
+                    tipiv.projectId = ''
+                } else {
+                    tipiv.indexbusiCheck = index
+                    tipiv.projectId = items.id
+                }
+
+                $('.reen img').css('transform', 'rotate(-0deg)')
+
+                tapList()
+            },
+            //进入直播或者预告
+            loads: function (items) {
+
+                location.href = './html/nba/' + (items.status == 1 ? 'watchlive' : 'trailer') + '.html?id=' +
+                    items.id
+            },
+
+        },
+        mounted: function () {
+            $(".tcdPageCode").hide()
+            //获取信息
+            $.ajax({
+                url: common.urls + '/user/info.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    id: -1,
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        tipiv.challenge = data.dataInfo.info
+                        localStorage.setItem('isSee', data.dataInfo.info.isSee);
+                        localStorage.setItem('userInfo', JSON.stringify(data.dataInfo));
+
+
+                        //轮播图
+                        $.ajax({
+                                url: common.urls + '/advert/list.do',
+                                dataType: 'json',
+                                type: 'get',
+                                data: {
+                                    userId: data.dataInfo.info.id,
+                                    type: '2',
+                                },
+                                success: function (data) {
+                                    if (data.status == 10001) {
+
+                                        tipiv.choice = data.dataInfo.info
+                                        tipiv.$nextTick(function () {
+                                            var swiper = new Swiper(
+                                                '.swiper-container', {
+                                                    loop: true, //无缝衔接滚动
+                                                    autoplay: {
+                                                        delay: 2500,
+                                                        disableOnInteraction: false,
+                                                    },
+                                                    lazyLoading: true, //图片延迟加载
+                                                    lazyLoadingInPrevNext: true, //前一个和后一个延迟加载
+                                                    pagination: {
+                                                        el: '.swiper-pagination',
+                                                        clickable: true,
+                                                    },
+                                                    navigation: {
+                                                        nextEl: '.swiper-button-next',
+                                                        prevEl: '.swiper-button-prev',
+                                                    },
+                                                });
+                                        })
+                                    } else {
+                                        layer.msg(data.msg)
+                                    }
+                                }
+                            }),
+                            //项目列表请求
+                            $.ajax({
+                                url: common.urls + '/project/classifyList.do',
+                                dataType: 'json',
+                                type: 'get',
+                                data: {
+                                    userId: data.dataInfo.info.id,
+                                    type: '1',
+                                    state: '1'
+                                },
+                                success: function (data) {
+                                    if (data.status == 10001) {
+                                        tipiv.project = data.dataInfo.info
+                                        for (var i = 0; i < data.dataInfo.info.length; i++) {
+                                            data.dataInfo.info[i].list = []
+                                            data.dataInfo.info[i].pageNum = 1
+                                        }
+                                        tipiv.project = data.dataInfo.info
+                                        /*  tipiv.project[tipiv.indexTapCheck].pageNum = 1 */
+                                        tipiv.indexbusiCheck = -1
+                                        tipiv.projectId = ''
+                                        tapList()
+                                        select()
+                                        tipiv.$nextTick(function () {
+                                            /*点击菜单事件*/
+                                            $('.wrapper').navbarscroll();
+                                            $(".clearfix li").click(function () {
+                                                var i = Number($(this).attr(
+                                                    "i"));
+                                                if (tipiv.indexTapCheck ==
+                                                    i) {
+                                                    return
+                                                }
+                                                tipiv.indexTapCheck = i
+                                                tipiv.indexbusiCheck = -
+                                                    1
+                                                tipiv.projectId = ''
+                                                tipiv.page = 1
+                                                tapList()
+                                                select()
+                                            })
+                                        })
+                                    }
+                                }
+                            })
+
+
+                    } else {
+                        layer.msg(data.msg)
+                    }
+                },
+                error: function (data) {
+
+                }
+            })
+
+
+        }
+    })
+    /*  */
+    function tapList(data) {
+        // 在线直播列表
+        $.ajax({
+            url: common.urls + '/live/list.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                userId: tipiv.challenge.id,
+                projectId: tipiv.project[tipiv.indexTapCheck].id,
+                serviceId: tipiv.projectId,
+                page: tipiv.page,
+                count: 1
+
+            },
+            success: function (data) {
+                if (data.status == 10001) {
+                    tipiv.nbas = data.dataInfo.info
+                    tipiv.show = data.dataInfo
+                    localStorage.setItem('show', JSON.stringify(data.dataInfo));
+                    tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+
+                    if (tipiv.nbas == '') {
+                        $(".tcdPageCode").hide()
+                    } else {
+                        $(".tcdPageCode").show()
+                    }
+                    tipiv.$nextTick(function () {
+                        // 点击分页
+                        $(".tcdPageCode").createPage({
+                            pageCount: tipiv.pageCount,
+                            current: tipiv.page,
+                            /*  backFn: function (p) {
+                                 tipiv.page = p
+                                 tapList()
+                             
+                             } */
+
+                        });
+
+
+                    })
+
+                } else {
+
+                }
+            },
+            error: function (data) {
+
+            }
+        })
+    }
+
+
+    function select() {
+        tipiv.business = []
+        /* 业务列表请求 */
+        $.ajax({
+            url: common.urls + '/project/classifyList.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                userId: tipiv.challenge.id,
+                type: '2',
+                projectId: tipiv.project[tipiv.indexTapCheck].id
+            },
+            success: function (data) {
+                if (data.status == 10001) {
+                    tipiv.business = data.dataInfo.info
+                    tipiv.$nextTick(function () {
+
+                    })
+                } else {
+
+                }
+            },
+            error: function (data) {
+
+            }
+        })
+    }
+    // 点击显示筛选
+    $(document).on('click', '.reen', function (event) {
+        if ($('.navMian').is(':hidden')) { //如果当前隐藏  
+            $('.navMian').show(); //那么就显示div  
+            $('.reen img').css('transform', 'rotate(-180deg)')
+
+        } else { //否则  
+            $('.navMian').hide(); //就隐藏div  
+            $('.reen img').css('transform', 'rotate(-0deg)')
+        }
+        //阻止冒泡
+        event.stopPropagation()
+    })
+    $(document).on('click', 'body', function (event) {
+        $('.navMian').hide(); //就隐藏div  
+        //阻止冒泡
+        event.stopPropagation();
+    })
+    // 点击分页
+    $(".tcdPageCode").createPage({
+
+        backFn: function (p) {
+            tipiv.page = p
+            tapList()
+
+        }
+
+    });
+</script>
+</html>

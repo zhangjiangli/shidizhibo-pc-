@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/livelist.css" />
+    <link rel="stylesheet" href="../../js/skin/layer.css" media="all">
+    <title>直播列表</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png"
+        type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../../html/personal/personal.html">
+                    <img :src="livelist.logoPath?livelist.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="wrap">
+            <div class="content">
+                <div class="lists_title">
+                    <span> 直播列表</span>
+                    <span class="lists_live" @click='applyfor'> 申请直播 </span>
+                </div>
+                <div class="listdetails" v-for='(item,index) in project' v-if='date<=item.liveDate'>
+                    <img :src="item.photoUrl" alt="" class="listpic">
+                    <div class="list_right">
+                        <span class="listtles">{{item.title}}</span>
+                        <span>{{item.projectName}}/{{item.serviceName}}/{{item.areaName}}</span>
+                        <span>开放观众: {{item.openState}}</span>
+                        <span>
+                            <img src="../../images/time.png" alt="" class="time"> {{item.liveDate}} {{item.liveTime}}
+                        </span>
+                    </div>
+
+                    <div class="startlive" v-if="item.status!=2 && date<=item.liveDate">
+                        <span class="see" @click='see(item)'>查看推流地址</span>
+                        <span @click="startlive(item,index)" v-if='item.status==0' id="livestartend"> 开始直播</span>
+                        <span class="startlives" v-if='item.status==1' @click='endlive(item)'>结束直播</span>
+                    </div>
+                    <div class="startlive" v-if="date>item.liveDate && item.status==2">
+                        <span class="see">已结束</span>
+                    </div>
+                    <!-- <div class="startlive" v-if='item.status==0 && date>item.liveDate'>已超过直播时间</div> -->
+                </div>
+
+
+            </div>
+        </div>
+        <!-- 分页 -->
+        <div class="paging">
+            <div class="tcdPageCode"></div>
+            <div v-show="project==''">没有数据</div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                    
+                </div>
+            </div>
+        </div>
+        <!-- 遮罩弹框 -->
+        <div class="readagreement" v-show='readagreement'>
+            <div class="success">
+                <div class="title">
+                    <span>PC端直播请下载OBS推流软件</span>
+                    <span class="title_x" @click="readagreement = ''">x</span>
+                </div>
+                <div class="address">
+                    <span>推流地址如下</span> URL：
+                    <div class="reement">{{urls}}</div>
+                    流名称：
+                    <div class="reement">{{reement}}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/jquery.page.js"></script>
+<script src="../../js/common.js"></script>
+<script src='../../js/vue.js'></script>
+<script src="../../js/layer.min.js"></script>
+<script>
+</script>
+<script>
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+    var tipiv = new Vue({
+        el: "#app",
+        data: {
+            reddot: common.show, //消息红点状态
+            project: '',
+            livelist: common.data.info,
+            // 推流
+            readagreement: '',
+            urls: '',
+            reement: '',
+            //页数
+            page: 1,
+            //总页数
+            pageCount: '',
+            date: (new Date()).toISOString().slice(0, 10),
+            flag: true,
+            overDate: false
+        },
+        methods: {
+            //申请直播
+            applyfor: function () {
+                location.href = './applylive.html'
+            },
+            //点击推流
+            see: function (item) {
+                this.readagreement = item.streamUrl
+
+                // this.urls = item.streamUrl.split('22685_s')[0]
+                this.urls = item.streamUrl.split('/23926_s')[0]
+                this.reement = item.streamUrl.split('live/')[1]
+
+            },
+            //点击开始直播
+            startlive: function (item, index) {
+                //   var time = ''
+                //现日期
+                var date = (new Date()).toISOString().slice(0, 10)
+                //现在时间 
+                //    time = buleng(new Date().getHours()) + ':' + buleng(new Date().getMinutes())
+
+                if (date > item.liveDate) {
+                    layer.msg('已超过直播时间，请重新申请')
+
+                } else if (date < item.liveDate) {
+                    layer.msg('未到直播时间')
+                } else if (date = item.liveDate) {
+                    //原来
+                    /* this.readagreement = item.streamUrl
+                    this.urls = item.streamUrl.split('22685_s')[0]
+                    this.reement = item.streamUrl.split('live/')[1] */
+                    //改动
+                    if (!tipiv.flag) {
+                        return
+                    }
+                    var id = item.id
+                    var roomId = item.roomId
+                    layer.confirm('是否开始直播？', {
+                        btn: ['是', '否'],
+                        btn1: function () {
+                            $.ajax({
+                                url: common.urls + '/live/saveLiveType.do',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {
+                                    id: id,
+                                    type: 1,
+                                    roomId: roomId
+                                },
+                                success: function (data) {
+                                    if (data.status == 10001) {
+                                        $("#livestartend").html("结束直播")
+                                        /* if (!tipiv.flag) {
+                                            return
+                                        } */
+                                        $("#livestartend").click(function () {
+                                            $.ajax({
+                                                url: common.urls +
+                                                    '/live/stopLive.do',
+                                                dataType: 'json',
+                                                type: 'post',
+                                                data: {
+                                                    id: id
+                                                },
+                                                success: function (
+                                                    data) {
+                                                    if (data.status ==
+                                                        10001) {
+                                                        layer.msg(
+                                                            '直播结束'
+                                                        )
+                                                        tipiv.flag =
+                                                            false;
+                                                        window.location
+                                                            .reload();
+                                                    }
+                                                }
+                                            })
+                                        })
+                                    } else {
+
+                                    }
+                                }
+                            })
+
+                        }
+
+                    })
+
+                }
+            },
+            //结束直播
+            endlive: function (item) {
+                var id = item.id
+                $.ajax({
+                    url: common.urls +
+                        '/live/stopLive.do',
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        id: id
+                    },
+                    success: function (
+                        data) {
+                        if (data.status ==
+                            10001) {
+                            layer.msg(
+                                '直播结束'
+                            )
+                            tipiv.flag = false;
+                            window.location.reload();
+                        }
+                    }
+                })
+            },
+            updata: function () {
+                $.ajax({
+                    url: common.urls + '/live/myLiveList.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        type: 1,
+                        count: 1,
+                        page: this.page
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+                            tipiv.project = data.dataInfo.info
+
+                            tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+                            if (tipiv.project == '') {
+                                $(".tcdPageCode").hide()
+                            } else {
+                                $(".tcdPageCode").show()
+                            }
+                            tipiv.$nextTick(function () {
+                                //分页
+                                $(".tcdPageCode").createPage({
+                                    pageCount: tipiv.pageCount,
+                                    current: tipiv.page,
+                                    /*  backFn: function(p) {
+                                         
+                                         tipiv.page = p
+                                         tipiv.updata()
+                                     } */
+                                });
+                            })
+                        } else {
+                            layer.msg(data.msg)
+                        }
+                    }
+                })
+            }
+        },
+        mounted: function () {
+            this.updata()
+        }
+
+    })
+    $(".tcdPageCode").createPage({
+
+        backFn: function (p) {
+
+            tipiv.page = p
+            tipiv.updata()
+        }
+    });
+
+    //加0
+    function buleng(num) {
+        if (num < 10) {
+            num = '0' + num
+        }
+        return num
+    }
+</script>
+
+</html>

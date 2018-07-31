@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/personal.css" />
+    <title>个人中心/我的项目</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="heads">
+            <div class="logo">
+                    <a href="../../index.html">
+                        <img src="../../images/logo.png" alt="">
+                    </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+                    <img :src="personal.logoPath ? personal.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="content">
+                <div class="left">
+                    <div class="top">
+                        <img :src="personal.logoPath ? personal.logoPath:'../../images/logos.png'" alt="">
+                        <span>{{personal.loginName}}</span>
+                        <span>{{personal.fullName}}</span>
+                    </div>
+                    <div class="sidebar">
+
+                        <ul class="aside">
+                            <a href="../personal/personal.html" class="navs">
+                                <li class="active">我的项目</li>
+                            </a>
+
+                            <a href="../personal/mylive.html">
+                                <li>我的直播</li>
+                            </a>
+
+                            <a href="../personal/myvideo.html" class="navs">
+                                <li>我的视频</li>
+                            </a>
+
+                            <a href="../personal/message.html">
+                                <li  class="msee">系统消息</li>
+                            </a>
+
+                            <a href="../personal/feedback.html">
+                                <li>意见反馈</li>
+                            </a>
+
+                            <a href="../personal/setup.html" class="navs">
+                                <li>更多设置</li>
+                            </a>
+
+                            <a href="javascript:ssologout()">
+                                <li>退出登录</li>
+                            </a>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="right">
+
+                    <!-- 导航 -->
+                    <div class="wrapper wrapper04" id="sass">
+                        <div class="scroller">
+                            <ul class="clearfix navs">
+                                <li :i="index" v-for='(item,index) in challenge'>
+                                    <a href="javascript:void(0)">{{item.projectName}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <ul class="list">
+                        <li @click='swich(0)' :class="{swich : indexWhole==0}">全部（{{liveNumber+videoNumber}}）</li>
+                        <li @click='swich(1)' :class="{swich : indexWhole==1}">直播（{{liveNumber}}）</li>
+                        <li @click='swich(2)' :class="{swich : indexWhole==2}">视频（{{videoNumber}}）</li>
+                    </ul>
+                    <div class="video_details" v-for='self in broadcasts'>
+                        <div class="pic">
+                            <img :src="self.photoUrl" alt="">
+                        </div>
+                        <div class="rights">
+                            <div class="titles">{{self.title}}</div>
+                            <span>{{self.serviceName}}/{{self.areaName}}</span>
+                            <span>开放观众：{{self.openState}}</span>
+                            <div class="details">
+                                <span class="details_title">{{self.nickName}}</span>
+                                <img src="../../images/time.png" alt="">
+                                <span>{{self.createTime}}</span>
+                                <img src="../../images/people.png" alt="">
+                                <span>{{self.watchCount}}</span>
+                            </div>
+
+                        </div>
+                        <div class="btns">
+                            <span class="trailer" @click='trailer(self)' v-show='self.type==1'>看预告</span>
+                            <span class="playback" v-show='self.type==1' @click='lookback(self)'>看回放</span>
+                            <span class="playback" @click='watchvideos(self)' v-show='self.type==2'>看视频</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- 分页 -->
+        <div class="paging">
+            <div class="tcdPageCode"></div>
+            <div class="" v-show="broadcasts == ''">没有数据</div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+ 
+<script src="../../js/iscroll.js"></script>
+<script src="../../js/navbarscroll.js"></script>
+<script src="../../js/jquery.page.js"></script>
+
+<script>
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            challenge: '',
+            personal: common.data.info,
+            reddot: common.show, //消息红点状态
+            //当前选中那个
+            indexTapCheck: 0,
+            // 项目id
+            projectId: '',
+            //全部
+            broadcasts: '',
+            //类型默认选择全部  
+            indexWhole: 0,
+            //直播人数
+            liveNumber: '',
+            //视频人数
+            videoNumber: '',
+            //页数
+            page: 1,
+            //总页数
+            pageCount: ''
+        },
+
+        mounted: function() {
+
+            //项目 
+            $.ajax({
+                url: common.urls + '/project/myProjectList.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    userId: common.data.info.id,
+                    page: 1
+                },
+                success: function(data) {
+                    if (data.status == 10001) {
+                        tipiv.challenge = data.dataInfo.info
+
+                        for (var i = 0; i < data.dataInfo.info.length; i++) {
+                            data.dataInfo.info[i].list = []
+
+                        }
+
+                        tipiv.projectId = ''
+                        tipiv.$nextTick(function() {
+                            select()
+                                /*点击菜单事件*/
+                            $('.wrapper').navbarscroll();
+                            $(".clearfix li").click(function() {
+                                var i = Number($(this).attr("i"));
+                                tipiv.indexTapCheck = i
+                                tipiv.indexWhole = 0
+                                tipiv.page = 1
+                                select()
+                                tipiv.liveNumber = tipiv.challenge[tipiv.indexTapCheck]
+                                    .liveCount
+                                tipiv.videoNumber = tipiv.challenge[tipiv.indexTapCheck]
+                                    .videoCount
+
+                            })
+                              //分页
+                        $(".tcdPageCode").createPage({
+                            pageCount: tipiv.pageCount,
+                            current: tipiv.page,
+                             backFn: function(p) {
+                              
+                                tipiv.page = p
+                                select()
+                            }  
+                        });
+                        })
+
+                        select()
+                        tipiv.liveNumber = tipiv.challenge[tipiv.indexTapCheck].liveCount
+                        tipiv.videoNumber = tipiv.challenge[tipiv.indexTapCheck].videoCount
+                    }
+
+                },
+                error: function(data) {
+
+                }
+            })
+        },
+        methods: {
+            //看预告
+            trailer: function(self) {
+                location.href = '../nba/trailer.html?id=' + self.id
+            },
+            //看视频
+            watchvideos: function(self) {
+                location.href = '../video/watch_video.html?id=' + self.id
+            },
+            //看回放
+            lookback: function(self) {
+             
+                location.href = '../video/lookback.html?videoUrl=' + self.videoList[0]
+            },
+
+            //点击全部  直播 视频 
+            swich: function(index) {
+                this.indexWhole = index
+                tipiv.page = 1
+                select()
+            },
+
+        },
+    })
+
+
+    //全部
+    function select() {
+        $.ajax({
+            url: common.urls + '/project/liveOrVideoList.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                projectId: tipiv.challenge[tipiv.indexTapCheck].id,
+                type: tipiv.indexWhole == 0 ? '' : tipiv.indexWhole,
+                page: tipiv.page,
+                count: 1
+            },
+            success: function(data) {
+                if (data.status == 10001) {
+                    tipiv.broadcasts = data.dataInfo.info
+                    tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+
+                    if (tipiv.broadcasts == '') {
+                        $(".tcdPageCode").hide()
+                    } else {
+                        $(".tcdPageCode").show()
+                    }
+                    tipiv.$nextTick(function() {
+                        //分页
+                        $(".tcdPageCode").createPage({
+                            pageCount: tipiv.pageCount,
+                            current: tipiv.page,
+                          /*   backFn: function(p) {
+                            
+                                tipiv.page = p
+                                select()
+                            } */
+                        });
+                    })
+
+                } else {
+
+                }
+            },
+            error: function(data) {
+
+            }
+        })
+    }
+</script>
+
+</html>

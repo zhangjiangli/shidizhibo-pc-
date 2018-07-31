@@ -1,0 +1,102 @@
+.wrap {
+    overflow: hidden;
+    min-width: 990px;
+    max-width: 1380px;
+    margin: 20px auto;
+    background: #f3f4f8; 
+}
+
+.content {
+    background-color: #f3f4f8;
+    min-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 784px;
+}
+[v-cloak] {
+    display: none !important;
+}
+
+.content .right{
+    float: left;
+    width: 78%;
+    margin-left: 20px;
+    position: relative;
+}
+.right .information{
+    background: #fff;
+    position: relative;
+}
+.right .information img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    vertical-align: middle;
+    padding: 24px 18px;
+} 
+.information .modify{
+    width: 88px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50px;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #4491e9;
+    color: #4491e9;
+    position: absolute;
+    right: 40px;
+    top: 42px;
+    cursor: pointer;
+   
+   
+}
+.information input{
+    width: 88px;
+    height: 26px;
+    line-height: 32px;  
+    position: absolute;
+    right: 40px;
+    top: 42px;
+    opacity: 0;
+    cursor: pointer;
+}
+.informause{
+    background: #fff;
+    position: relative;
+    height: 90px;
+    line-height: 90px;
+}
+.informause .use{
+    font-size: 16px;
+    padding-left: 14px;
+   
+}
+.informause .modify_see{
+    width: 88px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50px;
+    display: inline-block;
+    text-align: center;
+    border: 1px solid #4491e9;
+    color: #4491e9;
+    position: absolute;
+    right: 40px;
+    top: 28px;
+}
+/* 点击加样式 */
+.right .active{
+  background: #f3f4f8;
+  border:2px solid #d2dce8; 
+}
+.right .active .modify_see{
+    background: #4491e9;
+    color: #fff;
+}
+/* .informause:hover{
+    background: #f3f4f8;
+    border:2px solid #d2dce8;
+     
+} */
+ 

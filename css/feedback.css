@@ -1,0 +1,54 @@
+.wrap {
+    overflow: hidden;
+    min-width: 990px;
+    max-width: 1380px;
+    margin: 20px auto;
+    background: #f3f4f8; 
+}
+
+.content {
+    background-color: #f3f4f8;
+    min-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 784px;
+}
+[v-cloak]{
+    display: none !important;
+}
+.content .right{
+    float: left;
+    width: 78%;
+    margin-left: 20px;
+    position: relative;
+}
+.right .opinion{
+    font-size: 16px;
+    padding: 22px 16px;
+    background: #fff;
+}
+.right .texts{
+    height: 300px;
+    width: 100%;
+    border: none;
+    margin-top: 2px;
+    padding: 16px;
+    outline: none;
+    box-sizing: border-box;
+    resize:none ;
+  
+}
+.submission{
+    padding: 10px 30px;
+    border-radius: 50px;
+    display: inline-block;
+    color: #fff;
+    background: #4491e9;
+    text-align: center;
+    position: absolute;
+    right: 40px;
+   margin-top: 30px;
+   cursor: pointer;
+}
+ 

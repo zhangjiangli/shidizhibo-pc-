@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/swiper.min.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/message.css" />
+    <title>系统消息</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+
+    <div id="app" v-cloak>
+        <div class="heads">
+            <div class="logo">
+                    <a href="../../index.html">
+                        <img src="../../images/logo.png" alt="">
+                    </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+
+                    <img :src="message.logoPath ? message.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="content">
+                <div class="left">
+                    <div class="top">
+                        <img :src="message.logoPath ? message.logoPath:'../../images/logos.png'" alt="" srcset="">
+                        <span>{{message.loginName}}</span>
+                        <span>{{message.fullName}}</span>
+                    </div>
+                    <div class="sidebar">
+                        <ul class="aside">
+                            <a href="../personal/personal.html" class="navs">
+                                <li>我的项目</li>
+                            </a>
+
+                            <a href="../personal/mylive.html">
+                                <li>我的直播</li>
+                            </a>
+
+                            <a href="../personal/myvideo.html" class="navs">
+                                <li>我的视频</li>
+                            </a>
+
+                            <a href="../personal/message.html">
+                                <li class="active msee">系统消息</li>
+                            </a>
+
+                            <a href="../personal/feedback.html">
+                                <li>意见反馈</li>
+                            </a>
+
+                            <a href="../personal/setup.html" class="navs">
+                                <li>更多设置</li>
+                            </a>
+
+                            <a href="javascript:ssologout()">
+                                <li>退出登录</li>
+                            </a>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="right">
+                    <ul>
+                        <li class="news" v-for="item in challenge" @click='messages(item)'>
+                            <!-- 审核通过 -->
+                            <img src="../../images/newsadopt.png" v-show="item.type==2" alt="">
+                            <!-- 审核不通过 -->
+                            <img src="../../images/notnew.png" v-show="item.type==3" alt="">
+                            <!-- 系统消息 -->
+                            <img src="../../images/news.png" v-show="item.type==1" alt="">
+                            <span>{{item.title}}</span>
+                            <span class="times">{{item.createTime}}</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 分页 -->
+        <div class="paging">
+            <div class="tcdPageCode"></div>
+            <div class="" v-show="challenge == ''">没有数据</div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/jquery.page.js"></script>
+<script>
+    $(function () {
+        $('.aside a li').on('click', function () {
+            $('.aside a li').removeClass('active')
+            $(this).addClass('active')
+        })
+    })
+</script>
+<script>
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            challenge: '',
+            message: common.data.info,
+            reddot: common.show, //消息红点状态
+            //页数
+            page: 1,
+            //总页数
+            pageCount: ''
+        },
+        methods: {
+            /*  //点击退出登录
+             signout:function(){
+            // js浏览器关闭
+            document.write("Name: " + navigator.appName);
+                 var browserName = navigator.appName; //获取浏览器名称  
+                 if (browserName == "Netscape") {
+                     // 初始化对象里面的属性 ,删除本地储存
+                     localStorage.removeItem('userInfo')
+                     location.href = '../spot_live/signin.html'
+
+                     function closeme() {
+                         window.open('', '_parent', '');
+                         window.close();
+                     }
+                 } else {
+                     if (browserName == "Microsoft Internet Explorer") {
+                         function closynoshowsme() {
+                             window.opener = "test";
+                             window.close();
+                         }
+                     }
+                 }
+               
+             }, */
+            //点击消息
+            messages: function (item) {
+
+                if (item.type == 1) {
+                    location.href = common.urls + item.content
+                } else if (item.type == 2) {
+                    location.href = '../nba/livelist.html'
+                } else {
+                    location.href = '../personal/notpass.html?id=' + item.liveId + '&name=' + escape(item.projectName) +
+                        '&reason=' + escape(item.remark)
+                }
+
+            },
+            updata: function () {
+           
+                $.ajax({
+                    url: common.urls + '/msgPush/list.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        count: 1,
+                        page: this.page
+                    },
+                    success: function (data) {
+                        tipiv.challenge = data.dataInfo.info
+                        tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+                        if (tipiv.challenge == '') {
+                            $(".tcdPageCode").hide()
+                            console.log("0");
+                            
+                        } else {
+                            $(".tcdPageCode").show()
+                            console.log("1");
+                            
+                        }
+                        tipiv.$nextTick(function () {
+                            // 点击分页
+                            $(".tcdPageCode").createPage({
+                                pageCount: tipiv.pageCount,
+                                current: tipiv.page,
+                             /*    backFn: function (p) {
+                     
+                                    tipiv.page = p
+                                    tipiv.updata()
+                                } */
+                            })
+
+                        })
+                    },
+                    error: function (data) {
+
+                    }
+                })
+            }
+
+        },
+        mounted: function () {
+            $(".tcdPageCode").hide()
+            this.updata()
+        },
+
+    })
+    
+        // 点击分页
+        $(".tcdPageCode").createPage({
+            
+            backFn: function (p) {
+          
+                tipiv.page = p
+                tipiv.updata()
+            }
+        })
+   
+</script>
+
+</html>

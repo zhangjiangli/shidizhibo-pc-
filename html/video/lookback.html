@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+
+    <title>直播回放</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+    <style>
+        .content {
+            min-width: 800px;
+            margin: 0 auto;
+            box-sizing: border-box;
+            padding: 40px 200px;
+            background: #fff;
+            margin-top: 10px;
+            min-height: 766px
+        }
+
+
+        #video {
+            margin: 0 auto;
+            background: black;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app" v-cloak>
+
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="">现场直播</span>
+                </a>
+
+                <a href="../video/video.html">
+                    <span class="check">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+
+                    <img :src="looks.logoPath?looks.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+
+        <div class="content">
+            <video id="video" style="width:100%; height:600px;" controls autoplay="autoplay"></video>
+        </div>
+          <!-- 底部 -->
+          <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+    <script src="../../js/jquery-1.11.1.js"></script>
+    <script src="../../js/common.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../js/h5connect.js"></script>
+
+
+</body>
+<script>
+    $('.back').on('click', function () {
+        window.history.back(-1)
+    })
+
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+
+    var videoUrl = getQueryString("videoUrl");
+
+    /*     var videoUrl = data.dataInfo.info.videoUrl != null ? data.dataInfo.info.videoUrl : data.dataInfo.info.fileUrl; */
+
+    $("#video").html('<source src="' + videoUrl + '"  type="video/mp4">');
+
+    var tipiv = new Vue({
+        el: "#app",
+        data: {
+            looks: common.data.info,
+            reddot: common.show, //消息红点状态
+        },
+    })
+</script>
+
+</html>

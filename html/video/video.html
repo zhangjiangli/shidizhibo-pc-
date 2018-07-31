@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/video.css" />
+    <link rel="stylesheet" href="../../js/skin/layer.css" media="all">
+    <title>视频</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="heads">
+            <div class="logo">
+                    <a href="../../index.html">
+                        <img src="../../images/logo.png" alt="">
+                    </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="check">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+                    <img :src="videos.logoPath?videos.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <div class="slefs">
+
+            <div class="nav_head">
+                <div class="reen">
+                    <span class="screens">业务类型</span>
+                    
+                    <img src="../../images/sanjiao.png" alt="">
+
+                </div>
+                <!--筛选框 -->
+                <div class="navMian">
+                    <div class="navMian-left" v-for='(items,index) in business' :class="{actives : index==indexbusiCheck}" @click='bus(index,items)'>{{items.name}}</div>
+                </div>
+                <!-- 导航 -->
+                <div class="wrapper wrapper04" id="sass">
+                    <div class="scroller">
+                        <ul class="clearfix">
+                            <li :i="index" v-for='(item,index) in challenge' :class="{active : index==0}">
+                                <a href="javascript:void(0)">{{item.name}}</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="wrap">
+
+
+
+            <div class="videodetails">
+                <div class="videos" v-for='self in nbas' @click='nick(self)'>
+                    <div>
+                        <div class="sequence">
+                            <img :src="self.photoUrl" alt="">
+                        </div>
+                        <span class="opening">{{self.title}}</span>
+                        <span class="sign">{{self.projectName}}/{{self.serviceName}}</span>
+                        <div class="iconplay">
+                            <img src="../../images/iconplay.png" alt="" srcset="">
+                            <span>{{self.watchCount}}</span>
+                            <img src="../../images/time.png" alt="" srcset="">
+                            <span>{{self.videoTime}}</span>
+                            <!-- 没有对象 -->
+                        </div>
+                        <div class="displays">
+                            <img :src="self.logoPath?self.logoPath:'../../images/logos.png'" alt="">
+
+                            <span class="nickname">{{self.nickName}}</span>
+                            <span class="createtime">{{self.createTime}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分页 -->
+            <div class="paging">
+                <div class="tcdPageCode"></div>
+                <div class="" v-show="nbas == ''">没有数据</div>
+            </div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/jquery.page.js"></script>
+ 
+<script src="../../js/iscroll.js"></script>
+<script src="../../js/navbarscroll.js"></script>
+<script src="../../js/layer.min.js"></script>
+<script>
+    $(function () {
+        $('.choose>li').on('click', function () {
+            $(this).addClass('active').siblings().removeClass('active')
+        })
+
+    })
+</script>
+<script>
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            challenge: '', //项目列表
+            nbas: '', //视频列表
+            business: '', //业务列表
+            reddot: common.show, //消息红点状态
+            videos: common.data.info,
+            //当前选中那个
+            indexTapCheck: 0,
+            //业务列表当前选中
+            indexbusiCheck: -1,
+            // 项目id
+            projectId: '',
+            //页数
+            page: 1,
+            //总页数
+            pageCount: ''
+        },
+        methods: {
+
+            //点击业务
+            bus: function (index, items) {
+                if (tipiv.indexbusiCheck == index) {
+                    tipiv.indexbusiCheck = -1
+                    tipiv.projectId = ''
+                } else {
+                    tipiv.indexbusiCheck = index
+                    tipiv.projectId = items.id
+                }
+                $('.reen img').css('transform', 'rotate(-0deg)')
+                tapList()
+            },
+            //点击视频列表
+            nick: function (self) {
+
+                location.href = '../video/watch_video.html?id=' + self.id
+            },
+            //
+        },
+        mounted: function () {
+            $(".tcdPageCode").hide()
+            //项目列表请求
+            $.ajax({
+                url: common.urls + '/project/classifyList.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    userId: common.data.info.id,
+                    type: '1',
+                    state: '1'
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        tipiv.challenge = data.dataInfo.info
+                        for (var i = 0; i < data.dataInfo.info.length; i++) {
+                            data.dataInfo.info[i].list = []
+                            data.dataInfo.info[i].pageNum = 1
+                        }
+                        tipiv.challenge = data.dataInfo.info
+                        tipiv.challenge[tipiv.indexTapCheck].pageNum = 1
+                        tipiv.indexbusiCheck = -1
+                        tipiv.projectId = ''
+                        tapList()
+                        select()
+                        tipiv.$nextTick(function () {
+                            //点击菜单
+                            $('.wrapper').navbarscroll();
+                            $(".clearfix li").click(function () {
+                                var i = Number($(this).attr("i"));
+                                if (tipiv.indexTapCheck == i) {
+                                    return
+                                }
+                                tipiv.indexTapCheck = i
+                                tipiv.indexbusiCheck = -1
+                                tipiv.projectId = ''
+                                tipiv.page = 1
+                                tapList()
+                                select()
+                            })
+
+                        })
+
+
+                    }
+                }
+            })
+
+        }
+    })
+
+    function tapList() {
+
+        // 视频列表
+        $.ajax({
+            url: common.urls + '/video/list.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                userId: common.data.info.id,
+                projectId: tipiv.challenge[tipiv.indexTapCheck].id,
+                serviceId: tipiv.projectId,
+                count: 1,
+                page: tipiv.page
+            },
+            success: function (data) {
+                if (data.status == 10001) {
+                    tipiv.nbas = data.dataInfo.info
+                    tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+                    if (tipiv.nbas == '') {
+                        $(".tcdPageCode").hide()
+                    } else {
+                        $(".tcdPageCode").show()
+                    }
+                    tipiv.$nextTick(function () {
+                        // 点击分页
+                        $(".tcdPageCode").createPage({
+                            pageCount: tipiv.pageCount,
+                            current: tipiv.page,
+                             
+
+                        });
+                    })
+
+                } else {
+
+                }
+            },
+
+        })
+
+    }
+
+
+    function select() {
+ 
+        tipiv.business = []
+        /* 业务列表请求 */
+        $.ajax({
+            url: common.urls + '/project/classifyList.do',
+            dataType: 'json',
+            type: 'get',
+            data: {
+                userId: common.data.info.id,
+                type: '2',
+                projectId: tipiv.challenge[tipiv.indexTapCheck].id,
+            },
+            success: function (data) {
+                if (data.status == 10001) {
+                    tipiv.business = data.dataInfo.info
+                    if (tipiv.nbas == '') {
+                        $(".tcdPageCode").hide()
+                    } else {
+                        $(".tcdPageCode").show()
+                    }
+                    tipiv.$nextTick(function () {
+
+                    })
+
+                } else {
+                    layer.msg(data.msg)
+                }
+            },
+            error: function (data) {
+
+            }
+        })
+    }
+
+    // 点击显示筛选
+    $(document).on('click', '.reen', function (event) {
+        if ($('.navMian').is(':hidden')) { //如果当前隐藏  
+            $('.navMian').show(); //那么就显示div  
+            $('.reen img').css('transform', 'rotate(-180deg)')
+
+        } else { //否则  
+            $('.navMian').hide(); //就隐藏div  
+            $('.reen img').css('transform', 'rotate(-0deg)')
+        }
+        //阻止冒泡
+        event.stopPropagation()
+    })
+    $(document).on('click', 'body', function (event) {
+        $('.navMian').hide(); //就隐藏div  
+        //阻止冒泡
+        event.stopPropagation();
+    })
+    // 点击分页
+    $(".tcdPageCode").createPage({
+
+        backFn: function (p) {
+            tipiv.page = p
+            tapList()
+            
+        }
+
+    });
+</script>
+
+</html>

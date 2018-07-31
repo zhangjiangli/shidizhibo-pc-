@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
+    <link rel="stylesheet" href="../../js/skin/layer.css"  media="all">
+    <title>登录</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png" type="image/x-icon" />
+    <style>
+        .wrap {
+            width: 500px;
+            margin: 200px auto;
+            box-sizing: border-box;
+        }
+
+        .wrap .logo {
+            width: 100%;
+            text-align: center;
+
+        }
+
+        .wrap .logo img {
+            width: 260px;
+            padding-bottom: 30px;
+        }
+
+        .wrap h3 {
+            padding-bottom: 10px;
+        }
+
+        .wrap input {
+            width: 100%;
+            display: block;
+            padding: 16px 5px;
+            margin: 20px 0;
+            box-sizing: border-box;
+            border: none;
+            background: #f6f7fb;
+            outline: none;
+        }
+
+        .wrap .tourist {
+
+            color: #0d60b0;
+        }
+
+        .wrap .btn {
+            color: #fff;
+            width: 100%;
+            padding: 16px 0;
+            background: #c8c9cc;
+            text-align: center;
+            margin-top: 50px;
+
+        }
+
+
+        input::-webkit-input-placeholder {
+            color: #CCC;
+        }
+
+        input::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: #CCC;
+        }
+
+        input:-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: #CCC;
+        }
+
+        input:-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: #CCC;
+        }
+
+        .active {
+            background: #1261a4 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <div class="logo">
+               
+                    <img src="../../images/logo.png" alt="">
+          
+        </div>
+        <h3>登录</h3>
+        <input type="tel" placeholder="请输入手机号码" class="tel" maxlength="11" name="tel" />
+        <input type="password" placeholder="请输入密码" class="password" name='password' />
+        <span class="tourist">游客登录</span>
+        <div class="btn" onclick="register()" /> 确定</div>
+    </dsiv>
+</body>
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/md5.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/layer.min.js"></script>
+<script>
+    $(".tel,.password").keyup(function () {
+        if ($('.tel').val() !== '' && $('.password').val() !== '') {
+            $('.btn').addClass('active')
+        } else {
+            $('.btn').removeClass('active')
+        }
+    });
+    $(function () {
+        $('.tourist').on('click', function () {
+            location.href = './tourist.html'
+        })
+
+        $.ajax({
+            url: common.urls + '/user/setting.do',
+            dataType: 'json',
+            type: 'get',
+            data: {},
+            success: function (data) {
+                if (data.status == 10001) {
+                    if (data.dataInfo.info.visitors == 1) {
+                        $('.tourist').show()
+                    } else {
+                        $('.tourist').hide()
+                    }
+                } else(
+                    layer.msg(data.msg)
+                )
+            },
+            error: function (data) {
+
+            }
+        })
+
+    })
+
+    var usename = JSON.parse(localStorage.getItem('user'))
+    if (usename) {
+        $('.tel').val(usename.mobile)
+        $('.password').val(usename.psw)
+        $('.btn').addClass('active')
+    }
+
+    function isMob(value) {
+        var regex = /^0?(13[0-9]|17[03567]|15[012356789]|18[0-9]|14[57])[0-9]{8}$/;
+        return regex.test(value);
+    }
+
+    function register() {
+        if (!isMob($('.tel').val())) {
+            layer.msg('请输入正确手机号码')
+        } else if (!$('.password').val()) {
+            layer.msg('请输入密码')
+        } else {
+
+            var password = $('.password').val();
+            //加密成md5
+            var passwd = $.md5(password);
+           
+            $.ajax({
+                url: common.urls + '/user/login.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    mobile: $('.tel').val(),
+                    password: passwd,
+                    userType: '1'
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        localStorage.setItem('userInfo', JSON.stringify(data.dataInfo));
+                        var user = {
+                            mobile: $('.tel').val(),
+                            psw: $('.password').val()
+                        }
+                        localStorage.setItem('user', JSON.stringify(user))
+
+
+                        location.href = '../../index.html'
+                    } else {
+                       layer.msg(data.msg)  
+                    }
+                },
+                error: function (data) {
+
+                }
+            })
+
+        }
+    }
+</script>
+
+</html>

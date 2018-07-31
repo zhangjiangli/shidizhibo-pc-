@@ -1,0 +1,61 @@
+.wrap {
+    overflow: hidden;
+    min-width: 990px;
+    max-width: 1380px;
+    margin: 20px auto;
+    background: #f3f4f8;
+}
+
+.content {
+    background-color: #f3f4f8;
+    min-width: 1000px;
+    margin: 0 auto;
+    box-sizing: border-box;
+    overflow: hidden;
+    min-height: 780px;
+}
+
+[v-cloak] {
+    display: none !important;
+}
+
+.content .right {
+    float: left;
+    width: 78%;
+    margin-left: 20px;
+}
+
+.content .right .back {
+    background: #fff;
+    font-size: 16px;
+    margin-bottom: 2px;
+    display: inherit;
+}
+
+.content .right .back img {
+    width: 9px;
+    vertical-align: middle;
+    padding: 22px 7px 22px 25px;
+}
+
+.content .right .details_con {
+    padding: 28px;
+    background: #fff;
+}
+
+.content .right .details_con .title {
+    text-align: center;
+    display: block;
+    padding: 6px 0 24px 0;
+}
+
+.content .right .details_con p {
+    line-height: 20px;
+}
+
+.content .right .details_con img {
+    width: 650px;
+    margin: 30px auto;
+    display: inherit;
+}
+ 

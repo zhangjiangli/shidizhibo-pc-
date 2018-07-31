@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/mylive.css" />
+    <link rel="stylesheet" href="../../js/skin/layer.css" media="all">
+    <title>我的直播</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png"
+        type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../personal/personal.html">
+                    <img :src="mylive.logoPath ? mylive.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <div class="wrap">
+            <div class="content">
+                <div class="left">
+                    <div class="top">
+                        <img :src="mylive.logoPath ? mylive.logoPath:'../../images/logos.png'" alt="" srcset="">
+                        <span>{{mylive.loginName}}</span>
+                        <span>{{mylive.fullName}}</span>
+                    </div>
+                    <div class="sidebar">
+                        <ul class="aside">
+                            <a href="../personal/personal.html" class="navs">
+                                <li>我的项目</li>
+                            </a>
+
+                            <a href="../personal/mylive.html">
+                                <li class="active">我的直播</li>
+                            </a>
+
+                            <a href="../personal/myvideo.html" class="navs">
+                                <li>我的视频</li>
+                            </a>
+
+                            <a href="../personal/message.html">
+                                <li class="msee">系统消息</li>
+                            </a>
+
+                            <a href="../personal/feedback.html">
+                                <li>意见反馈</li>
+                            </a>
+
+                            <a href="../personal/setup.html" class="navs">
+                                <li>更多设置</li>
+                            </a>
+
+                            <a href="javascript:ssologout()">
+                                <li>退出登录</li>
+                            </a>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="right">
+                    <div class="check_pic">
+                        <span class="beelected" @click='beelected' :class="{'checked':checkedAll}"></span>
+                        <div class='tops'>
+                            <span>全选</span>
+                            <span class="delete" @click='deletes'>删除</span>
+                        </div>
+                    </div>
+
+                    <!--  -->
+                    <div class="video_details" v-for="(item,index) in challenge">
+
+                        <span class="beelected" @click='beelec(item)' :class="{'checked' : item.checked}"></span>
+                        <div class="pic">
+                            <img :src="item.photoUrl" alt="">
+                        </div>
+                        <div class="rights">
+                            <span>{{item.projectName}}</span>
+                            <span>{{item.serviceName}}/{{item.areaName}}</span>
+                            <span>开放观众：{{item.openState}}</span>
+                            <div class="details">
+                                <span class="details_title">{{item.title}}</span>
+                                <img src="../../images/time.png" alt="">
+                                <span>{{item.liveDate}} {{item.liveTime}}</span>
+                                <img src="../../images/people.png" alt="">
+                                <span>00</span>
+                            </div>
+
+                        </div>
+                        <div class="audit" v-if='item.checkState==0'>
+                            审核中
+                        </div>
+                        <div class="startlive" v-if='(item.checkState==1 && item.status!=2) && (date<=item.liveDate)'>
+                            <span class="see" @click='see(item)'>查看推流地址</span>
+                            <span class="startlives" id="startlives" v-if='item.status==0' @click='startlive(item,index,$event)'>开始直播</span>
+                            <span class="startlives" v-if='item.status==1' @click='endlive(item)'>结束直播</span>
+                        </div>
+                        <div class="startlive" v-if='(item.checkState==1 && item.status==1) && (date>item.liveDate)'>
+                            <span class="see" @click='see(item)'>查看推流地址</span>
+                            <span class="startlives" id="startlives" v-if='item.status==0' @click='startlive(item,index,$event)'>开始直播</span>
+                            <span class="startlives" v-if='item.status==1' @click='endlive(item)'>结束直播</span>
+                        </div>
+                        <div class="notpass" v-if='item.checkState==2' @click='notpass(item)'>
+                            审核不通过
+                        </div>
+                        <div class="liveend" v-if="item.checkState==1 && item.status==2">已结束</div>
+                        <div class="liveend" v-if='(item.checkState==1 && item.status==0 ) && date>item.liveDate'>已超过直播时间</div>
+                        <!-- <div class="liveend liveend_2" style="display: none">已结束</div> -->
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!-- 分页 -->
+        <div class="paging">
+
+            <div class="tcdPageCode"></div>
+            <div class="" v-show="challenge == ''">没有数据</div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+        <!-- 遮罩弹框 -->
+
+        <div class="readagreement" v-show='readagreement'>
+            <div class="success">
+                <div class="title">
+                    <span>PC端直播请下载OBS推流软件</span>
+                    <span class="title_x" @click="readagreement = ''">x</span>
+                </div>
+                <div class="address">
+                    <span>推流地址如下</span> URL：
+                    <div class="reement">{{urls}}</div>
+                    流名称：
+                    <div class="reement">{{reement}}</div>
+                </div>
+            </div>
+        </div>
+        <!-- 是否删除弹框 -->
+        <div class="deletes">
+            <div class="whether">
+                <div class="or">是否确定删除？</div>
+                <span class="todelete" @click='todelete'>确定</span>
+                <span class="tocancel">取消</span>
+            </div>
+        </div>
+
+    </div>
+</body>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/jquery.page.js"></script>
+<script src="../../js/layer.min.js"></script>
+
+<script>
+    $(function () {
+        $('.aside a li').on('click', function () {
+            $('.aside a li').removeClass('active')
+            $(this).addClass('active')
+        })
+        $('.tocancel').on('click', function () {
+            $('.deletes').hide()
+        })
+
+    })
+</script>
+<script>
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            reddot: common.show, //消息红点状态
+            mylive: common.data.info,
+            challenge: '',
+            pageSize: '',
+            // 推流
+            readagreement: '',
+            urls: '',
+            reement: '',
+            checkedAll: false,
+            //直播时间
+            liveTime: '', //日期
+            liveTime: '', //时间
+            idarr: '',
+            //页数
+            page: 1,
+            //总页数
+            pageCount: '',
+            states: "",
+            date: (new Date()).toISOString().slice(0, 10),
+            flag: true
+
+        },
+        mounted: function () {
+            $(".tcdPageCode").hide()
+            this.updata()
+        },
+        methods: {
+            //单选
+            beelec: function (item) {
+                var self = false
+                item.checked = !item.checked
+                for (var i = 0; i < tipiv.challenge.length; i++) {
+
+                    if (!tipiv.challenge[i].checked) {
+                        self = true
+                    }
+                }
+                if (!self) {
+                    tipiv.checkedAll = true
+                } else {
+                    tipiv.checkedAll = false
+                }
+            },
+
+            //点击审核不通过
+            notpass: function (item) {
+
+                location.href = '../personal/notpass.html?id=' + item.id + '&name=' + escape(item.projectName) +
+                    '&reason=' + escape(item.checkReason)
+
+
+            },
+            //查看推流地址
+            see: function (data) {
+                this.readagreement = data.streamUrl
+
+                this.urls = data.streamUrl.split('/23926_s')[0]
+                this.reement = data.streamUrl.split('live/')[1]
+
+
+            },
+            beelected: function () {
+                tipiv.checkedAll = !tipiv.checkedAll
+                for (var i = 0; i < tipiv.challenge.length; i++) {
+
+                    if (tipiv.checkedAll) {
+                        tipiv.challenge[i].checked = true
+                    } else {
+                        tipiv.challenge[i].checked = false
+                    }
+                }
+            },
+
+            //点击开始直播
+            startlive: function (item, index, e) {
+                var time = ''
+                //现日期
+                var date = (new Date()).toISOString().slice(0, 10)
+                //现在时间 
+                if (new Date().getHours() < 10 && new Date().getMinutes() < 10) {
+                    var hours = '0' + new Date().getHours()
+                    var minutes = '0' + new Date().getMinutes()
+                    time = hours + ':' + minutes
+
+                } else {
+                    time = new Date().getHours() + ':' + new Date().getMinutes()
+                }
+
+                if (date > item.liveDate) {
+                    layer.msg('已超过直播时间，请重新申请', function () {
+                        $(e.target).hide()
+                        $(e.target).parent().hide();
+                        $(e.target).parent().siblings(".liveend_2").show();
+
+                    })
+                    
+                } else if (date < item.liveDate) {
+                    layer.msg('未到直播时间')
+                } else if (date = item.liveDate) {
+                    //原来
+                    /* this.readagreement = item.streamUrl
+                    this.urls = item.streamUrl.split('22685_s')[0]
+                    this.reement = item.streamUrl.split('live/')[1] */
+                    //改动
+                    if (!tipiv.flag) {
+                        return
+                    }
+                    var id = item.id
+                    var roomId = item.roomId
+                    layer.confirm('是否开始直播？', {
+                        btn: ['是', '否'],
+                        btn1: function () {
+                            $.ajax({
+                                url: common.urls + '/live/saveLiveType.do',
+                                dataType: 'json',
+                                type: 'post',
+                                data: {
+                                    id: id,
+                                    type: 1,
+                                    roomId: roomId
+                                },
+                                success: function (data) {
+                                    if (data.status == 10001) {
+                                        $("#startlives").html("结束直播")
+                                        /* if (!tipiv.flag) {
+                                            return
+                                        } */
+                                        $("#startlives").click(function () {
+                                            $.ajax({
+                                                url: common.urls +
+                                                    '/live/stopLive.do',
+                                                dataType: 'json',
+                                                type: 'post',
+                                                data: {
+                                                    id: id
+                                                },
+                                                success: function (
+                                                    data) {
+                                                    if (data.status ==
+                                                        10001) {
+                                                        layer.msg(
+                                                            '直播结束'
+                                                        )
+                                                        tipiv.flag =
+                                                            false;
+                                                        // this.$options.methods.updata();
+                                                        // this.updata();
+                                                        window.location
+                                                            .reload();
+                                                    }
+                                                }
+                                            })
+                                        })
+                                    }
+                                }
+                            })
+
+                        }
+
+                    })
+
+
+                }
+
+            },
+            /* hehe(e) {
+                console.log(e.target);
+                
+            }, */
+            //结束直播
+            endlive: function (item) {
+                if (!tipiv.flag) {
+                    return
+                }
+                var id = item.id
+                $.ajax({
+                    url: common.urls +
+                        '/live/stopLive.do',
+                    dataType: 'json',
+                    type: 'post',
+                    data: {
+                        id: id
+                    },
+                    success: function (
+                        data) {
+                        if (data.status ==
+                            10001) {
+                            layer.msg(
+                                '直播结束'
+                            )
+                            tipiv.flag = false;
+                            // this.updata();
+                            window.location.reload();
+                        }
+                    }
+                })
+            },
+            //删除
+            deletes: function () {
+
+                var array = [];
+                var idarr = []
+                for (var i = 0; i < tipiv.challenge.length; i++) {
+                    array.push(tipiv.challenge[i].checked);
+                    if (tipiv.challenge[i].checked == true) {
+                        idarr.push(tipiv.challenge[i].id);
+                    }
+                }
+
+                tipiv.idarr = idarr
+                if (array.indexOf(true) == -1) {
+                    layer.msg('请选择要删除的数据')
+                } else {
+                    $('.deletes').show()
+                }
+            },
+            todelete: function () {
+
+                $.ajax({
+                    url: common.urls + '/live/delete.do',
+                    dataType: 'json',
+                    type: 'post',
+                    traditional: true,
+                    data: {
+                        ids: tipiv.idarr
+
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+                            $('.deletes').hide()
+                            layer.msg('删除成功')
+                            setTimeout(function () {
+                                window.location.reload();
+                            }, 1000)
+
+                        }
+                    }
+                })
+            },
+            updata: function () {
+                $.ajax({
+                    url: common.urls + '/live/myLiveList.do',
+                    dataType: 'json',
+                    type: 'get',
+                    data: {
+                        userId: common.data.info.id,
+                        type: 2,
+                        count: 1,
+                        page: this.page
+                    },
+                    success: function (data) {
+                        if (data.status == 10001) {
+
+                            /* data.dataInfo.info.forEach((val) => {
+                                val.checked = false
+                            }); */
+                            data.dataInfo.info.forEach(function (val) {
+                                val.checked = false
+                            });
+                            tipiv.challenge = data.dataInfo.info
+
+                            tipiv.pageCount = (Math.ceil(data.dataInfo.count / 10))
+                            if (tipiv.challenge == '') {
+                                $(".tcdPageCode").hide()
+                            } else {
+                                $(".tcdPageCode").show()
+                            }
+                            tipiv.$nextTick(function () {
+                                // 点击分页
+                                $(".tcdPageCode").createPage({
+                                    pageCount: tipiv.pageCount,
+                                    current: tipiv.page,
+                                    /*   backFn: function (p) {
+                                          tipiv.page = p
+
+                                          tipiv.updata()
+                                      } */
+                                })
+                            })
+                        } else {
+
+                        }
+                    },
+                    error: function (data) {
+
+                    }
+                })
+            }
+        }
+    })
+    // 点击分页
+    $(".tcdPageCode").createPage({
+        backFn: function (p) {
+            tipiv.page = p
+            tipiv.updata()
+        }
+    })
+</script>
+
+</html>

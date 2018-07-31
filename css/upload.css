@@ -1,0 +1,110 @@
+.wrap {
+    overflow: hidden;
+    min-width: 990px;
+    max-width: 1380px;
+    margin: 0 auto;
+    background: #f3f4f8;
+}
+
+.content {
+    min-width: 800px;
+    margin: 0 auto;
+    background: white;
+    box-sizing: border-box;
+    padding-bottom: 38px;
+    min-height: 824px;
+}
+
+.content .order {
+    padding: 30px 0 30px 68px;
+    border-bottom: 1px solid #cccccc;
+    color: #c3cedc;
+    box-sizing: border-box;
+}
+
+.content .order .number {
+    border: 1px solid;
+    border-radius: 50%;
+    width: 24px;
+    display: inline-block;
+    height: 24px;
+    text-align: center;
+    line-height: 24px;
+}
+
+.content .order .line {
+    border-bottom: 2px solid #c3cedc;
+    width: 40%;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.content .order .active {
+    background: #4591e9;
+    color: #fff;
+}
+
+.content .order .actives {
+    color: #000000;
+}
+
+.files {
+    width: 90%;
+    margin: 220px auto;
+    background: #f3f4f8;
+    text-align: center;
+    padding: 66px 0;
+    position: relative;
+}
+
+.files img {
+    width: 60px;
+    vertical-align: middle;
+}
+
+.files span {
+    color: #99c0ef;
+    display: block;
+}
+
+.files input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0
+}
+
+/* 上传中 */
+
+.uploading {
+    background-color: rgba(0, 0, 0, 0.2); 
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 10000;
+    display: none;   
+}
+
+.frames {
+    width: 400px;
+    border-radius: 4px;
+    margin: 350px auto;
+    background: white;
+}
+.cancel{
+    width: 96px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50px;
+    margin: 0 30px;
+    display: inline-block;
+    background: #4491e9;
+    color: #ffffff;
+    margin-top: 20px;
+    text-align: center;
+    cursor: pointer;
+}

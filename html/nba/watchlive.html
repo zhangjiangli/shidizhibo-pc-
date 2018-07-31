@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0"
+    />
+    <link rel="stylesheet" type="text/css" href="../../css/common.css" />
+    <link rel="stylesheet" type="text/css" href="../../css/watchlive.css" />
+    <title>直播详情</title>
+    <link rel="shortcut icon" href="https://sddc-1256739877.cos-website.ap-guangzhou.myqcloud.com/picture/20180622111936365.png"
+        type="image/x-icon" />
+</head>
+
+<body>
+    <div id="app" v-cloak>
+        <!-- 头部 -->
+        <div class="heads">
+            <div class="logo">
+                <a href="../../index.html">
+                    <img src="../../images/logo.png" alt="">
+                </a>
+            </div>
+            <div class="nav_center">
+                <a href="../../index.html">
+                    <span class="check">现场直播</span>
+                </a>
+                <a href="../video/video.html">
+                    <span class="">视频</span>
+                </a>
+            </div>
+            <div class="navs">
+                <ul>
+                    <!-- 判断点击开播跳转页面 -->
+                    <li v-if="reddot.liveCount==0">
+                        <a href="../nba/applylive.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li v-else>
+                        <a href="../nba/livelist.html">
+                            <img src="../../images/nav/livebroadcast.png" alt=""> 开播
+                        </a>
+                    </li>
+                    <li>
+                        <a href="../video/upload.html">
+                            <img src="../../images/nav/upload.png" alt=""> 上传</a>
+                    </li>
+                    <li>
+                        <a href="../personal/message.html">
+                            <img class="reddot" src="../../images/reddot.png" alt="" v-show='reddot.isReddot==1'>
+                            <img src="../../images/nav/information.png" alt=""> 信息
+                        </a>
+                    </li>
+                </ul>
+                <a href="../../html/personal/personal.html">
+                    <img :src="watchlive.logoPath?watchlive.logoPath:'../../images/logos.png'" alt="" class="personal">
+                </a>
+            </div>
+        </div>
+        <!-- 内容 -->
+        <div class="wrap">
+            <div class="content">
+                <div class="left">
+                    <div class="title">
+                        <img :src="project.logoPath?project.logoPath:'../../images/logos.png' " alt="" srcset="" class="title-img">
+                        <div class="msee">
+                            <span>{{project.title}}</span>
+                            <span>{{project.nickName}}</span>
+                            <span>{{project.projectName}}/{{project.serviceName}}/{{project.areaName}}</span>
+                            <!--   <span>{{project.liveDate}}</span> -->
+                            <img src="../../images/people.png" alt="">
+                            <span>{{project.watchCount}}</span>
+                        </div>
+                    </div>
+                    <!-- 视频 -->
+                    <div class="videos">
+                        <div class="vos">
+                            <!-- 视频  autoplay controls-->
+                            <div id="id_video_container" style="width:100%; height:auto;text-align: center"></div>
+                        </div>
+                        <div class="partition">
+                            <span v-for='(item,index) in areaList' :class="{self:item.id==id}" @click='partition(item)'>{{item.areaName}}</span>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="right">
+                    <span class="sale">开盘简报</span>
+                    <ul>
+                        <li>成交套数：{{salesData.dealnum}}套</li>
+                        <li>成交金额：{{salesData.dealprice}}万元</li>
+                        <!--  <li>成交价（元/㎡）：{{salesData.sellingrate}}元</li> -->
+                        <li>去化率：{{salesData.dealamount}}%</li>
+                        <!--     <li>客户购买率：{{salesData.purchaserate}}%</li> -->
+                        <li>已缴费:{{salesData.paidnum}}</li>
+                        <li>已销控：{{salesData.chargednum}}</li>
+                        <li>签到数：{{salesData.signnum}}</li>
+                        <li>签到率：{{salesData.signrate}}%</li>
+                        <!-- <li>
+                            <button onclick="addDanmu()">弹幕效果</button>
+                        </li>
+ -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- 底部 -->
+        <div class="foots">
+            <div>
+                <ul>
+                    <li>
+                        <a href="#">法律声明</a>
+                    </li>|
+                    <li>
+                        <a href="#">在线留言</a>
+                    </li>|
+                    <li>
+                        <a href="#">网址地图</a>
+                    </li>|
+                    <li>
+                        <a href="#">联系我们</a>
+                    </li>
+                </ul>
+                <div class="copy">
+                    粤ICP备13058296号 &nbsp;&nbsp; COPYRIGT&copy; &nbsp;&nbsp; 版权所有：广州实地房地产开发有限公司 版权所有
+                    <img src="../../images/cnzz.png" alt="" class="cnzz">
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+<!-- <script type="text/javascript" src="http://192.168.1.44:8083/assets/player.js"></script><script type="text/javascript">p2ps_embed("auto", "live", "http://192.168.1.44:8083/videos/live/22/39/tUabV17nAPCev", "p2ps_video", "640", "480", "10.1.0", "http://192.168.1.44:8083/assets/expressInstall.swf",{}, {allowFullScreen:true, allowScriptAccess: "always"});Limediaserver</script><div id="p2ps_video"><p><a href="http://www.adobe.com/go/getflashplayer"><img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="安装最新的Flash player" /></a></p></div> 
+<script src="https://unpkg.com/videojs-flash/dist/videojs-flash.js"></script> -->
+<script src="../../js/jquery-1.11.1.js"></script>
+<script src="../../js/common.js"></script>
+<script src="../../js/vue.js"></script>
+<script src="http://qzonestyle.gtimg.cn/open/qcloud/video/live/h5/live_connect.js" charset="utf-8"></script>
+
+
+
+<script>
+    $(function () {
+        $(".lists").mousemove(function () {
+            $(this).addClass('active')
+        });
+        $(".lists").mouseout(function () {
+            $(this).removeClass('active')
+        });
+
+        if ($("#video_10000000_embed").attr("allowfullscreen")) {
+            console.log("888");
+
+        }
+
+    })
+</script>
+<script>
+    var player = null;
+
+    function getQueryString(name) {
+        var result = window.location.search.match(new RegExp("[\?\&]" + name + "=([^\&]+)", "i"));
+        if (result == null || result.length < 1) {
+            return "";
+        }
+        return result[1];
+    }
+
+    /* function addDanmu() {
+        var barrage = [{
+                "type": "content",
+                "content": "hello world",
+                "time": "1"
+            },
+            {
+                "type": "content",
+                "content": "居中显示",
+                "time": "1",
+                "style": "C64B03;30",
+                "position": "center"
+            }
+        ];
+        player.addBarrage(barrage);
+    } */
+
+    var tipiv = new Vue({
+        el: '#app',
+        data: {
+            project: '',
+            areaList: '',
+            watchlive: common.data.info,
+            reddot: common.show, //消息红点状态
+            //销售数据
+            salesData: "",
+            id: getQueryString("id")
+        },
+        methods: {
+            //点击分区
+            partition: function (item) {
+                location.href = '../nba/watchlive.html?id=' + item.id
+            }
+        },
+        mounted: function () {
+            //直播详情
+            $.ajax({
+                url: common.urls + '/live/detail.do',
+                dataType: 'json',
+                type: 'get',
+                data: {
+                    id: getQueryString("id"),
+                    type: '1',
+                    state: '1'
+                },
+                success: function (data) {
+                    if (data.status == 10001) {
+                        tipiv.project = data.dataInfo.info
+                        tipiv.areaList = data.dataInfo.info.areaList
+
+                        var option = {
+                            "live_url": tipiv.project.watchUrl.replace(".flv?", ".m3u8?"),
+                            "width": 800,
+                            "height": 500,
+                            "auto_play": "1" //是否自动播放 默认值0 (0: 不自动,1: 自动播放)
+
+                            /* playStatus: function(status, type){
+                                console.log(status);
+                                console.log(type);
+                                if(status=='error'){
+
+                                }
+                                
+                            } */
+                        };
+
+                        player = new qcVideo.Player("id_video_container", option);
+
+                        console.log(player);
+
+
+                        var url = common.urls + '/live/saveWatch.do';
+                        $.post(url, {
+                            type: 1,
+                            userId: common.data.info.id,
+                            relId: tipiv.project.id
+                        }, function (ret) {
+
+                        })
+                        //销售数据
+
+                        var flag = data.dataInfo.info.areaName
+                        var isSee = localStorage.getItem('isSee')
+                        var dataType=data.dataInfo.info.dataType
+
+                        if (flag == '个人类型' || isSee == '0' || dataType != '1') {
+                            $('.right').hide()
+                            return
+
+                        }
+
+                        $.ajax({
+                            // http://live.seedland.cc:8081/sddc/live/GetSalesDataByProjectInfo.do
+                            // http://test-live.seedland.cc:8080/live/GetSalesDataByProjectInfo.do
+                            // url: common.urls +'/live/GetSalesDataByProjectInfo.do',
+                            url: 'http://test-live.seedland.cc:8081/live/GetSalesDataByProjectInfo.do',
+                            dataType: 'json',
+                            type: 'get',
+                            data: {
+                                sellProjectDate: tipiv.project.sellProjectDate,
+                                sellProjectId: tipiv.project.sellProjectId
+                            },
+
+                            success: function (data) {
+                                if (data.status == 10001) {
+                                    tipiv.salesData = data.dataInfo.info
+                                }
+
+                            }
+                        })
+
+                        setInterval(function () {
+                            $.ajax({
+                                // url: common.urls +'/live/GetSalesDataByProjectInfo.do',
+                                url: 'http://test-live.seedland.cc:8081/live/GetSalesDataByProjectInfo.do',
+                                dataType: 'json',
+                                type: 'get',
+                                data: {
+                                    sellProjectDate: tipiv.project.sellProjectDate,
+                                    sellProjectId: tipiv.project.sellProjectId
+                                },
+                                success: function (data) {
+                                    if (data.status == 10001) {
+                                        tipiv.salesData = data.dataInfo.info
+                                    }
+
+                                }
+                            })
+                        }, 5000)
+
+                    }
+                }
+            })
+            //销售数据
+
+        }
+    })
+</script>
+
+</html>

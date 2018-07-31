@@ -1,0 +1,137 @@
+.wrap {
+    overflow: hidden;
+    min-width: 990px;
+    max-width: 1380px;
+    margin: 0 auto;
+    background: #f3f4f8;
+}
+
+.content {
+    min-width: 1180px;
+    margin: 0 auto;
+    overflow: hidden;
+    padding: 22px 0 40px 0; 
+    min-height: 760px;
+}
+[v-cloak]{
+    display: none !important;
+}
+
+.content .left {
+    width: 78%;
+    float: left;
+    background: #fff;
+    height: 700px;
+}
+
+.content .title .title-img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    vertical-align: middle;
+    padding: 20px 16px 20px 20px;
+}
+
+.content .title .msee {
+    display: inline-table;
+}
+.content .title .msee span{
+    padding-right: 14px;
+}
+
+.content .title .msee>span:nth-of-type(1) {
+    display: block;
+    padding-bottom: 6px;
+    font-weight: bold;
+}
+
+.content .title .msee img {
+    width: 16px;
+    height:16px;
+    vertical-align: middle;
+}
+
+.left .videos {
+    width: 100%;
+    background: #000;
+   
+}
+.left .videos video{
+    width: 100%;
+    height: 500px;
+}
+.left .videos img {
+    width: 100%;
+    height: 100%;
+}
+
+.content .right {
+    width: 20%;
+    background: #fff;
+    margin-left: 20px;
+    float: left;
+    height: 700px;
+    
+}
+
+.content .right .more {
+    display: block;
+    margin: 36px 0;
+    padding-left: 36px;
+    border-left: 3px solid #4491e9;
+    color: #4491e9;
+}
+
+.right .video-list {
+    border-top: 2px solid #f3f4f8;
+}
+
+.right .video-list .lists {
+    width: 100%;
+    display: -moz-box;
+    /* Firefox */
+    display: -ms-flexbox;
+    /* IE10 */
+    display: -webkit-box;
+    /* Safari */
+    display: -webkit-flex;
+    /* Chrome, WebKit */
+    display: box;
+    display: flexbox;
+    display: flex;
+    padding: 16px;
+    box-sizing: border-box;
+}
+.right .video-list .lists .imgs{
+ width: 124px;
+ height: 90px;
+ border-radius: 4px;
+}
+.video-list .lists div span {
+    display: inline-block;
+    padding-bottom: 5px;
+    width: 110px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    overflow: hidden;
+}
+.video-list .lists span img{
+    width: 14px;
+    height: 10px;
+}
+.video-list .lists div {
+    padding-left: 10px;
+}
+/* 点击加样式 */
+.right .active{
+    background: #f3f4f8;
+    border:2px solid #d2dce8; 
+  }
+  .right .active .modify_see{
+      background: #4491e9;
+      color: #fff;
+  }
+  #video{
+      background: black;
+  }
